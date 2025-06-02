@@ -78,14 +78,23 @@ while True:
     player_paddle.clamp_ip(pygame.Rect(0, 0, WIDTH, HEIGHT)) # Assurer que le paddle reste dans l'écran
 
     if len(balls_data) > 0:
-        # IA simple : suit la balle la plus proche (ou la première)
-        # Pour une IA plus avancée, on pourrait prédire la trajectoire
-        closest_ball_y = balls_data[0, 1] + ball_radius # Centre Y de la première balle
-        if opponent_paddle.centery < closest_ball_y :
-            opponent_paddle.y += opponent_paddle_speed_val
-        elif opponent_paddle.centery > closest_ball_y:
-            opponent_paddle.y -= opponent_paddle_speed_val
-    opponent_paddle.clamp_ip(pygame.Rect(0, 0, WIDTH, HEIGHT)) # Assurer que le paddle reste dans l'écran
+    # Find balls moving toward the opponent
+    balls_towards_opponent = balls_data[balls_data[:, 2] > 0]
+    if len(balls_towards_opponent) == 0:
+        # If no balls are moving towards the opponent, just use the ball closest to the opponent paddle
+        distances = np.abs((balls_data[:, 0] + ball_radius) - opponent_paddle.left)
+        tracked_ball = balls_data[np.argmin(distances)]
+    else:
+        # Find the ball moving toward the opponent with the minimum distance to the paddle
+        distances = np.abs((balls_towards_opponent[:, 0] + ball_radius) - opponent_paddle.left)
+        tracked_ball = balls_towards_opponent[np.argmin(distances)]
+
+    # Move the paddle toward the y position of that ball (center)
+    ball_center_y = tracked_ball[1] + ball_radius
+    if opponent_paddle.centery < ball_center_y - opponent_paddle_speed_val:
+        opponent_paddle.y += opponent_paddle_speed_val
+    elif opponent_paddle.centery > ball_center_y + opponent_paddle_speed_val:
+        opponent_paddle.y -= opponent_paddle_speed_val
 
 
     if len(balls_data) == 0: # Devrait être rare avec la logique de respawn, mais sécurité
