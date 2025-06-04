@@ -4,23 +4,31 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.11'
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
 
-    - name: Install dependencies
-      run: pip install pyinstaller
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller pygame numpy
 
-    - name: Build with PyInstaller
-      run: |
-        pyinstaller --noconfirm --windowed --icon=icon.ico --add-data "sounds;sounds" pong_ultra_chaos.py
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller --noconfirm --windowed --icon=icon.ico ^
+            --hidden-import=pygame ^
+            --hidden-import=numpy ^
+            --add-data "sounds;sounds" pong_ultra_chaos.py
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
