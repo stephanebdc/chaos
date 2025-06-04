@@ -26,12 +26,12 @@ jobs:
       - name: Build with PyInstaller
         run: |
           pyinstaller --noconfirm --windowed --icon=icon.ico ^
-            --hidden-import=pygame ^
-            --hidden-import=numpy ^
-            --add-data "sounds;sounds" pong_ultra_chaos.py
+          --hidden-import=pygame ^
+          --hidden-import=numpy ^
+          --add-data "sounds;sounds" pong_ultra_chaos.py
 
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        name: PongChaos-Windows
-        path: dist/
+      - name: Upload artifact   # ✅ indenté correctement ici
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: PongChaos-Windows
+          path: dist/
