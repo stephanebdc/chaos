@@ -20,7 +20,7 @@ jobs:
 
     - name: Build with PyInstaller
       run: |
-        pyinstaller --noconfirm --windowed --icon=icon.ico --add-data "sounds;sounds" .py
+        pyinstaller --noconfirm --windowed --icon=icon.ico --add-data "sounds;sounds" pong_ultra_chaos.py
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
