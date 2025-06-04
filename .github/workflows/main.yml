@@ -1,0 +1,29 @@
+name: Build EXE for Windows
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: pip install pyinstaller
+
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller --noconfirm --windowed --icon=icon.ico --add-data "sounds;sounds" .py
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: PongChaos-Windows
+        path: dist/
